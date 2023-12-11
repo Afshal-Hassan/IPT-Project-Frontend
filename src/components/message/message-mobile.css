@@ -1,0 +1,73 @@
+@media (max-width: 500px) {
+  #type-messages {
+    border: 1px solid #f2f3f5 !important;
+
+    width: 68% !important;
+    height: 100% !important;
+    box-sizing: border-box !important;
+    padding-left: 24px !important;
+    font-size: 15px !important;
+    margin: 0 !important;
+    border-radius: 24px !important;
+    background-color: #f2f3f5 !important;
+    font-family: "Fira Sans", sans-serif !important;
+    border: none !important;
+    outline: none !important;
+  }
+
+  .insert-emoji {
+    color: #0d2234 !important;
+    margin-left: 20px !important;
+    cursor: pointer !important;
+    border-radius: 100% !important;
+    position: relative;
+    top: 4px !important;
+  }
+
+  #send-btn {
+    color: whitesmoke !important;
+    cursor: pointer !important;
+    border-radius: 100% !important;
+    padding: 10px !important;
+    background: #0d2234 !important ;
+    margin-left: 21px !important;
+  }
+
+  .outgoing-messages {
+    max-width: 160px !important;
+    min-height: fit-content !important;
+    overflow-wrap: break-word !important ;
+    background-color: #0d2234 !important;
+    position: relative !important;
+    border-radius: 15px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    padding-top: 13.5px !important;
+    padding-bottom: 13.5px !important;
+    margin-bottom: 34px !important;
+    font-family: "Fira Sans", sans-serif !important;
+    text-align: center !important;
+    font-size: 15px !important;
+    color: whitesmoke !important;
+  }
+
+  .incoming-messages {
+    max-width: 160px !important;
+    min-height: fit-content !important;
+
+    overflow-wrap: break-word !important ;
+    background-color: #f2f3f5 !important;
+    color: black !important;
+    position: relative !important;
+    border-radius: 15px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    padding-top: 13.5px !important;
+    padding-bottom: 13.5px !important;
+    align-self: flex-start !important;
+    font-family: "Fira Sans", sans-serif !important;
+    text-align: center !important;
+    font-size: 15px !important;
+    margin-bottom: 34px !important;
+  }
+}

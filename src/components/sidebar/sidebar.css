@@ -1,0 +1,28 @@
+#sidebar-sider {
+  background: #0d2234 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  border-right: 0.3px solid #0d2234 !important;
+}
+
+#users-layout-chat-heading-container-sidebar {
+  margin-left: 30px !important;
+  margin-bottom: 30px !important;
+}
+
+.chat-sidebar {
+  margin-left: 10px !important;
+}
+
+#sidebar-sider::-webkit-scrollbar {
+  width: 2px !important;
+}
+
+#sidebar-sider::-webkit-scrollbar-track {
+  background-color: #0d2234 !important;
+}
+
+#sidebar-sider::-webkit-scrollbar-thumb {
+  background-color: #ffffff !important;
+}
