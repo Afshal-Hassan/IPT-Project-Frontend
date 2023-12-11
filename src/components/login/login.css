@@ -1,18 +1,18 @@
 #login-layout {
   width: 100%;
   height: 100vh;
-  background: white !important;
+  background: var(--background, #F9F9F9) !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
 }
 
-.login-layout {
+/* .login-layout {
   height: 100vh !important;
   display: flex !important;
   flex-direction: row;
-}
+} */
 
 .login-heading {
   font-family: Poppins, sans-serif !important;
