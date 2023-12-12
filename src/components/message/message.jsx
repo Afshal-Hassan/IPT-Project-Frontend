@@ -2,7 +2,6 @@ import React, { memo, useEffect, useRef, useState } from "react";
 import "./message.css";
 import "./message-mobile.css";
 import { Layout, Typography, Input, Progress, Modal } from "antd";
-import Person from "../../assets/Person.jpg";
 import { SendOutlined, AreaChartOutlined } from "@ant-design/icons";
 import EmojiPicker from "emoji-picker-react";
 import io from "socket.io-client";
@@ -134,7 +133,11 @@ function Message() {
       <div id="message-receiver-heading-container" onClick={showSideBarDrawer}>
         {privateRoomOfUser.data && privateRoomOfUser.data._id ? (
           <>
-            <img src={Person} alt="" id="message-receiver-image" />
+            <img
+              src={`${senderAndReceiver.data.messageReceiverProfilePic}`}
+              alt=""
+              id="message-receiver-image"
+            />
             <div id="message-receiver-name-and-active-status-container">
               <h4 id="message-receiver-name">
                 {senderAndReceiver.data.messageReceiverName}

@@ -16,7 +16,7 @@ function Login() {
     onSuccess: (tokenResponse) => {
       axios
         .post("https://chatapp-backend-5tbb.onrender.com/auth", {
-          idToken: tokenResponse.id_token,
+          accessToken: tokenResponse.access_token,
         })
         .then((res) => {
           localStorage.setItem("jwt", res.data.data.token);

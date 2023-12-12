@@ -8,7 +8,6 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import { Drawer, Typography, Progress } from "antd";
-import Person from "../../assets/Person.jpg";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getFriendsOfUser } from "../../services/friend-slice";
@@ -44,6 +43,7 @@ function Sidebar() {
       updateSenderAndReceiverData({
         messageSender: userId,
         messageReceiver: friend._id,
+        messageReceiverProfilePic: friend.profilePic,
         messageReceiverName: friend.name,
       })
     );
@@ -72,6 +72,7 @@ function Sidebar() {
           updateSenderAndReceiverData({
             messageSender: newUserId,
             messageReceiver: response.payload[0].friendId._id,
+            messageReceiverProfilePic: response.payload[0].friendId.profilePic,
             messageReceiverName: response.payload[0].friendId.name,
           })
         );

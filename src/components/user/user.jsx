@@ -2,7 +2,6 @@ import React from "react";
 import "./user.css";
 import { Layout, Typography, Progress } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import Person from "../../assets/Person.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { getFriendsOfUser } from "../../services/friend-slice";
@@ -36,6 +35,7 @@ function Users() {
       updateSenderAndReceiverData({
         messageSender: userId,
         messageReceiver: friend._id,
+        messageReceiverProfilePic: friend.profilePic,
         messageReceiverName: friend.name,
       })
     );
@@ -60,6 +60,7 @@ function Users() {
           updateSenderAndReceiverData({
             messageSender: newUserId,
             messageReceiver: response.payload[0].friendId._id,
+            messageReceiverProfilePic: response.payload[0].friendId.profilePic,
             messageReceiverName: response.payload[0].friendId.name,
           })
         );
@@ -106,7 +107,7 @@ function Users() {
             key={i}
             onClick={() => getPrivateRoom(friendId)}
           >
-            <img src={Person} alt="" className="user-image" />
+            <img src={`${friendId.profilePic}`} alt="" className="user-image" />
             <Text className="user-name">{friendId.name}</Text>
           </div>
         ))
@@ -123,6 +124,7 @@ function Users() {
               key={i}
               onClick={() => getPrivateRoom(friendId)}
             >
+              {console.log(friendId.profilePic)}
               <img
                 src={`${friendId.profilePic}`}
                 alt=""
