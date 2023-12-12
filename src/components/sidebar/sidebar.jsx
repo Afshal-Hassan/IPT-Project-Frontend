@@ -30,7 +30,6 @@ function Sidebar() {
   };
 
   const getPrivateRoom = async (friend) => {
-    console.log(friend);
     const data = {
       user1Id: userId,
       user2Id: friend._id,

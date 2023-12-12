@@ -9,6 +9,7 @@ import { getFriendsOfUser } from "../../services/friend-slice";
 import { getPrivateRoomOfUser } from "../../services/private-room-slice";
 import { updateSenderAndReceiverData } from "../../services/sender-and-receiver-slice";
 import { memo } from "react";
+import { getMessagesOfTwoUsers } from "../../services/message-slice";
 
 const { Title } = Typography;
 const { Text } = Typography;
@@ -46,7 +47,16 @@ function Users() {
     setUserId(newUserId);
 
     if (newUserId != null) {
-      await dispatch(getFriendsOfUser(newUserId));
+      const response = await dispatch(getFriendsOfUser(newUserId));
+      if (response.payload.length > 0) {
+        getPrivateRoom(response.payload[0]);
+        // dispatch(
+        //   getMessagesOfTwoUsers({
+        //     user1Id: newUserId,
+        //     user2Id: response.payload[0]._id,
+        //   })
+        // );
+      }
     }
   };
 

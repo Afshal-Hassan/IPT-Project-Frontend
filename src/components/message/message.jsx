@@ -49,34 +49,34 @@ function Message() {
   };
 
   const sendMessage = async () => {
-    socket.emit("send-message", {
-      message: message,
-      room: privateRoomOfUser.data._id,
-      messageSender: senderAndReceiver.data.messageSender,
-      messageReceiver: senderAndReceiver.data.messageReceiver,
-    });
-    dispatch(
-      updateMessages({
-        senderId: senderAndReceiver.data.messageSender,
+    if (message !== null && message !== undefined && message.trim() !== "") {
+      socket.emit("send-message", {
         message: message,
-      })
-    );
+        room: privateRoomOfUser.data._id,
+        messageSender: senderAndReceiver.data.messageSender,
+        messageReceiver: senderAndReceiver.data.messageReceiver,
+      });
+      dispatch(
+        updateMessages({
+          senderId: senderAndReceiver.data.messageSender,
+          message: message,
+        })
+      );
 
-    setTimeout(() => {
-      setMessage("");
-    }, 500);
+      setTimeout(() => {
+        setMessage("");
+      }, 500);
+    }
   };
 
   const receiveMessage = () => {
     socket.off("receive-message").on(
       "receive-message",
       (data) => {
-        if (privateRoomOfUser.data._id === data.room) {
-          setArrivalMessage({
-            senderId: senderAndReceiver.data.messageReceiver,
-            message: data.message,
-          });
-        }
+        setArrivalMessage({
+          senderId: senderAndReceiver.data.messageReceiver,
+          message: data.message,
+        });
       },
       [socket]
     );
@@ -116,7 +116,7 @@ function Message() {
   useEffect(() => {
     joinRoom();
     receiveMessage();
-  }, [privateRoomOfUser.data._id]);
+  }, [privateRoomOfUser.data]);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behaviour: "smooth" });
@@ -127,8 +127,6 @@ function Message() {
   useEffect(() => {
     arrivalMessage && dispatch(updateMessages(arrivalMessage));
   }, [arrivalMessage]);
-
-  useEffect(() => {}, [messages]);
 
   return (
     <Layout id="messages-layout">
