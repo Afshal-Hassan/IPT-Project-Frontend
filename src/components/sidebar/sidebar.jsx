@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import "./sidebar.css";
 import { useSelector } from "react-redux";
-import sidebarSlice, {
-  updateSideBarStatus,
-} from "../../services/sidebar-slice";
+import { updateSideBarStatus } from "../../services/sidebar-slice";
 import { SearchOutlined } from "@ant-design/icons";
 import { Drawer, Typography, Progress } from "antd";
 import Person from "../../assets/Person.jpg";
@@ -12,7 +10,7 @@ import { useEffect } from "react";
 import { getFriendsOfUser } from "../../services/friend-slice";
 import { getPrivateRoomOfUser } from "../../services/private-room-slice";
 import { updateSenderAndReceiverData } from "../../services/sender-and-receiver-slice";
-import { jwtDecode } from "jwt-decode";
+import { getMessagesOfTwoUsers } from "../../services/message-slice";
 
 const { Title } = Typography;
 const { Text } = Typography;
@@ -57,7 +55,13 @@ function Sidebar() {
     if (newUserId != null) {
       const response = await dispatch(getFriendsOfUser(newUserId));
       if (response.payload.length > 0) {
-        getPrivateRoom(response.payload[0].friendId);
+        getPrivateRoom(response.payload[0]);
+        dispatch(
+          getMessagesOfTwoUsers({
+            user1Id: newUserId,
+            user2Id: response.payload[0]._id,
+          })
+        );
       }
     }
   };
