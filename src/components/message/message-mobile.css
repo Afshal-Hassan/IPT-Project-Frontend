@@ -1,4 +1,9 @@
 @media (max-width: 500px) {
+  #messages-input-container {
+    box-shadow: 3px 3px 5px 1.5px lightgray !important;
+    width: 100% !important;
+    height: 10% !important;
+  }
   #type-messages {
     border: 1px solid #f2f3f5 !important;
 
