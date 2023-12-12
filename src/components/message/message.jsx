@@ -106,7 +106,6 @@ function Message() {
   };
 
   const onEmojiClick = (emojiObject, event) => {
-    console.log(emojiObject);
     setMessage((prevInput) => prevInput + emojiObject.emoji);
 
     setEmojiPicker(false);
