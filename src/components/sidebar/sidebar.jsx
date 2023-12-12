@@ -53,16 +53,7 @@ function Sidebar() {
     setUserId(newUserId);
 
     if (newUserId != null) {
-      const response = await dispatch(getFriendsOfUser(newUserId));
-      if (response.payload.length > 0) {
-        getPrivateRoom(response.payload[0]);
-        dispatch(
-          getMessagesOfTwoUsers({
-            user1Id: newUserId,
-            user2Id: response.payload[0]._id,
-          })
-        );
-      }
+      dispatch(getFriendsOfUser(newUserId));
     }
   };
 

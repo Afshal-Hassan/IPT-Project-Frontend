@@ -196,9 +196,9 @@ function Message() {
         <Modal
           open={emojiModelOpen}
           onCancel={() => setEmojiModalOpen(false)}
-          onOk={() => setEmojiModalOpen(false)}
+          footer={null}
         >
-          <div className="modal-box" onClick={modalEmojiCloser}>
+          <div className="modal-box">
             {emojiPicker && (
               <EmojiPicker emojiStyle="google" onEmojiClick={onEmojiClick} />
             )}

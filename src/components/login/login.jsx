@@ -88,7 +88,8 @@ function Login() {
         </Button>
       </div>
       <span style={{ fontSize: 14, marginTop: 10, color: "#555" }}>
-        By joining, you agree to our <span style={{ color: "#0d2234" }}> Terms & Conditions </span>
+        By joining, you agree to our{" "}
+        <span style={{ color: "#0d2234" }}> Terms & Conditions </span>
       </span>
     </Layout>
   );
