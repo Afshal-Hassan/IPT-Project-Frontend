@@ -14,12 +14,13 @@ import { useEffect } from "react";
 import { getFriendsOfUser } from "../../services/friend-slice";
 import { getPrivateRoomOfUser } from "../../services/private-room-slice";
 import { updateSenderAndReceiverData } from "../../services/sender-and-receiver-slice";
-import { getMessagesOfTwoUsers } from "../../services/message-slice";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 const { Text } = Typography;
 
 function Sidebar() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const sideBarSlice = useSelector((state) => state.sidebarSlice);
   const listOfFriends = useSelector((state) => state.friendSlice);
@@ -65,6 +66,14 @@ function Sidebar() {
     dispatch(updateSideBarStatus(false));
   };
 
+  const logOut = () => {
+    localStorage.clear();
+
+    setTimeout(() => {
+      navigate("/login");
+    }, 500);
+  };
+
   useEffect(() => {
     getAllFriendsList();
   }, []);
@@ -89,6 +98,7 @@ function Sidebar() {
             position: "relative",
             top: 8.5,
           }}
+          onClick={logOut}
         />
       </div>
 

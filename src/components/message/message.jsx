@@ -73,10 +73,12 @@ function Message() {
     socket.off("receive-message").on(
       "receive-message",
       (data) => {
-        setArrivalMessage({
-          senderId: senderAndReceiver.data.messageReceiver,
-          message: data.message,
-        });
+        if (privateRoomOfUser.data._id === data.room) {
+          setArrivalMessage({
+            senderId: senderAndReceiver.data.messageReceiver,
+            message: data.message,
+          });
+        }
       },
       [socket]
     );
