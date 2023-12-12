@@ -9,6 +9,10 @@
 #users-layout-chat-heading-container-sidebar {
   margin-left: 30px !important;
   margin-bottom: 30px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
 }
 
 .chat-sidebar {

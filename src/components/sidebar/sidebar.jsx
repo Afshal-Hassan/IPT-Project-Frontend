@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import "./sidebar.css";
 import { useSelector } from "react-redux";
 import { updateSideBarStatus } from "../../services/sidebar-slice";
-import { SearchOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  CloseOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
 import { Drawer, Typography, Progress } from "antd";
 import Person from "../../assets/Person.jpg";
 import { useDispatch } from "react-redux";
@@ -72,11 +76,20 @@ function Sidebar() {
       closable={true}
       open={sideBarSlice.data}
       onClose={closeSideBar}
+      closeIcon={<CloseOutlined style={{ color: "white" }} />}
     >
       <div id="users-layout-chat-heading-container-sidebar">
         <Title level={3} id="user-admin-chats-heading">
           Chats
         </Title>
+        <LogoutOutlined
+          style={{
+            color: "white",
+            fontSize: 17,
+            position: "relative",
+            top: 8.5,
+          }}
+        />
       </div>
 
       <div id="chat-search" className="chat-sidebar">

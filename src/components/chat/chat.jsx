@@ -14,11 +14,11 @@ function Chat() {
     setDeviceWidth(window.innerWidth);
   };
 
-  useEffect(() => {
-    if (!localStorage.getItem("jwt") && !localStorage.getItem("user")) {
-      navigate("/login");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!localStorage.getItem("jwt") && !localStorage.getItem("user")) {
+  //     navigate("/login");
+  //   }
+  // }, []);
 
   useEffect(() => {
     window.addEventListener("resize", calculateDeviceWidth);
