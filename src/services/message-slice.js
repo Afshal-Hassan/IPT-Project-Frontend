@@ -4,11 +4,6 @@ import axios from "axios";
 export const getMessagesOfTwoUsers = createAsyncThunk(
   "messageSlice",
   async (data) => {
-    const data1 = {
-      user1Id: "65746a8d17f9eae9470a578b",
-      user2Id: "65746a7b17f9eae9470a5787",
-    };
-
     try {
       const response = await axios.post(
         `https://chatapp-backend-5tbb.onrender.com/message/all`,

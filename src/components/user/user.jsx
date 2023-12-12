@@ -1,19 +1,21 @@
 import React from "react";
 import "./user.css";
 import { Layout, Typography, Progress, notification } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
-import Person from "../../assets/Person.jpg";
+import { SearchOutlined, LogoutOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { getFriendsOfUser } from "../../services/friend-slice";
 import { getPrivateRoomOfUser } from "../../services/private-room-slice";
 import { updateSenderAndReceiverData } from "../../services/sender-and-receiver-slice";
 import { memo } from "react";
+import { getMessagesOfTwoUsers } from "../../services/message-slice";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 const { Text } = Typography;
 
 function Users() {
+  const navigate = useNavigate();
   const [api, contextHolder] = notification.useNotification();
 
   const dispatch = useDispatch();
@@ -38,15 +40,27 @@ function Users() {
       user1Id: userId,
       user2Id: friend._id,
     };
-
-    dispatch(getPrivateRoomOfUser(data));
-    dispatch(
-      updateSenderAndReceiverData({
-        messageSender: userId,
-        messageReceiver: friend._id,
-        messageReceiverName: friend.name,
-      })
-    );
+    try {
+      dispatch(getPrivateRoomOfUser(data));
+      dispatch(
+        updateSenderAndReceiverData({
+          messageSender: userId,
+          messageReceiver: friend._id,
+          messageReceiverProfilePic: friend.profilePic,
+          messageReceiverName: friend.name,
+        })
+      );
+    } catch (error) {
+      if (error.response && error.response.status === 429) {
+        openNotificationWithIcon(
+          "error",
+          "Too Many Requests",
+          "Try again later..."
+        );
+      } else {
+        console.log(error);
+      }
+    }
   };
 
   const getAllFriendsList = async () => {
@@ -55,8 +69,53 @@ function Users() {
     setUserId(newUserId);
 
     if (newUserId != null) {
-      await dispatch(getFriendsOfUser(newUserId));
+      const response = await dispatch(getFriendsOfUser(newUserId));
+      if (response.payload.length > 0) {
+        try {
+          dispatch(
+            getPrivateRoomOfUser({
+              user1Id: newUserId,
+              user2Id: response.payload[0].friendId._id,
+            })
+          );
+
+          dispatch(
+            updateSenderAndReceiverData({
+              messageSender: newUserId,
+              messageReceiver: response.payload[0].friendId._id,
+              messageReceiverProfilePic:
+                response.payload[0].friendId.profilePic,
+              messageReceiverName: response.payload[0].friendId.name,
+            })
+          );
+
+          dispatch(
+            getMessagesOfTwoUsers({
+              user1Id: newUserId,
+              user2Id: response.payload[0].friendId._id,
+            })
+          );
+        } catch (error) {
+          if (error.response && error.response.status === 429) {
+            openNotificationWithIcon(
+              "error",
+              "Too Many Requests",
+              "Try again later..."
+            );
+          } else {
+            console.log(error);
+          }
+        }
+      }
     }
+  };
+
+  const logOut = () => {
+    localStorage.clear();
+
+    setTimeout(() => {
+      navigate("/login");
+    }, 500);
   };
 
   useEffect(() => {
@@ -69,6 +128,15 @@ function Users() {
         <Title level={3} id="user-admin-chats-heading">
           Chats
         </Title>
+        <LogoutOutlined
+          style={{
+            color: "white",
+            fontSize: 17,
+            position: "relative",
+            top: 8.5,
+          }}
+          onClick={logOut}
+        />
       </div>
 
       <div id="chat-search">
@@ -91,7 +159,7 @@ function Users() {
             key={i}
             onClick={() => getPrivateRoom(friendId)}
           >
-            <img src={Person} alt="" className="user-image" />
+            <img src={`${friendId.profilePic}`} alt="" className="user-image" />
             <Text className="user-name">{friendId.name}</Text>
           </div>
         ))
@@ -108,7 +176,12 @@ function Users() {
               key={i}
               onClick={() => getPrivateRoom(friendId)}
             >
-              <img src={Person} alt="" className="user-image" />
+              {console.log(friendId.profilePic)}
+              <img
+                src={`${friendId.profilePic}`}
+                alt=""
+                className="user-image"
+              />
               <Text className="user-name">{friendId.name}</Text>
             </div>
           ))

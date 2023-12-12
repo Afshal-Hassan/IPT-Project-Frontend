@@ -64,7 +64,7 @@
 #messages-input-container {
   box-shadow: 3px 3px 5px 1.5px lightgray !important;
   width: 100% !important;
-  height: 7% !important;
+  height: 9% !important;
 }
 
 @media (min-width: 1500px) {
@@ -206,4 +206,8 @@
 }
 .insert-emoji:hover {
   background-color: #f2f3f5 !important;
+}
+
+.modal-box {
+  width: 80% !important;
 }

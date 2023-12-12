@@ -44,7 +44,7 @@ function Login() {
   return (
     <Layout id="login-layout">
       <Title level={1} style={{ marginBottom: 50, fontSize: 45 }}>
-        Welcome to our <span style={{ color: "#0d2234" }}>Chat App</span>
+        Welcome to <span style={{ color: "#61C2D0" }}>ByteView</span>
       </Title>
       <div
         style={{
@@ -87,6 +87,10 @@ function Login() {
           Sign in with Google
         </Button>
       </div>
+      <span style={{ fontSize: 14, marginTop: 31, color: "#555" }}>
+        By joining, you agree to our{" "}
+        <span style={{ color: "#61C2D0" }}> Terms & Conditions </span>
+      </span>
     </Layout>
   );
 }

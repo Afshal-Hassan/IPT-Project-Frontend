@@ -1,8 +1,7 @@
 import React, { memo, useEffect, useRef, useState } from "react";
 import "./message.css";
 import "./message-mobile.css";
-import { Layout, Typography, Input, Progress, Modal } from "antd";
-import Person from "../../assets/Person.jpg";
+import { Layout, Typography, Input, Progress, Modal, notification } from "antd";
 import { SendOutlined, AreaChartOutlined } from "@ant-design/icons";
 import EmojiPicker from "emoji-picker-react";
 import io from "socket.io-client";
@@ -22,6 +21,7 @@ const { Text } = Typography;
 const socket = io("https://chatapp-backend-5tbb.onrender.com");
 
 function Message() {
+  const [api, contextHolder] = notification.useNotification();
   const dispatch = useDispatch();
   const privateRoomOfUser = useSelector((state) => state.privateRoomSlice);
   const senderAndReceiver = useSelector(
@@ -32,10 +32,18 @@ function Message() {
   const [message, setMessage] = useState("");
 
   const [arrivalMessage, setArrivalMessage] = useState(null);
+  const [errorArrivalMessage, setErrorArrivalMessage] = useState(null);
   const [emojiPicker, setEmojiPicker] = useState(false);
   const [emojiModelOpen, setEmojiModalOpen] = useState(false);
 
   const scrollRef = useRef();
+
+  const openNotificationWithIcon = (type, message, description) => {
+    api[type]({
+      message: message,
+      description: description,
+    });
+  };
 
   const joinRoom = async () => {
     dispatch(refreshMessages());
@@ -51,35 +59,54 @@ function Message() {
   };
 
   const sendMessage = async () => {
-    socket.emit("send-message", {
-      message: message,
-      room: privateRoomOfUser.data._id,
-      messageSender: senderAndReceiver.data.messageSender,
-      messageReceiver: senderAndReceiver.data.messageReceiver,
-    });
-    dispatch(
-      updateMessages({
-        senderId: senderAndReceiver.data.messageSender,
+    if (message !== null && message !== undefined && message.trim() !== "") {
+      socket.emit("send-message", {
         message: message,
-      })
-    );
+        room: privateRoomOfUser.data._id,
+        messageSender: senderAndReceiver.data.messageSender,
+        messageReceiver: senderAndReceiver.data.messageReceiver,
+      });
+      dispatch(
+        updateMessages({
+          senderId: senderAndReceiver.data.messageSender,
+          message: message,
+        })
+      );
 
-    setTimeout(() => {
-      setMessage("");
-    }, 500);
+      setTimeout(() => {
+        setMessage("");
+      }, 500);
+    }
   };
 
   const receiveMessage = () => {
-    const handleReceiveMessage = (data) => {
-      setArrivalMessage({
-        senderId: senderAndReceiver.data.messageReceiver,
-        message: data.message,
-      });
-    };
+    socket.off("receive-message").on(
+      "receive-message",
+      (data) => {
+        if (privateRoomOfUser.data._id === data.room) {
+          setArrivalMessage({
+            senderId: senderAndReceiver.data.messageReceiver,
+            message: data.message,
+          });
+        }
+      },
+      [socket]
+    );
+  };
 
-    // Remove existing event listener (if any) and add a new one
-    socket.off("receive-message", handleReceiveMessage);
-    socket.on("receive-message", handleReceiveMessage);
+  const errorMessage = () => {
+    socket.off("error-message").on(
+      "error-message",
+      (data) => {
+        if (senderAndReceiver.data.messageSender === data.messageSender) {
+          setErrorArrivalMessage({
+            message: "Too Many Requests",
+            description: "try again later...",
+          });
+        }
+      },
+      [socket]
+    );
   };
 
   const onChangeMessageText = (event) => {
@@ -106,7 +133,6 @@ function Message() {
   };
 
   const onEmojiClick = (emojiObject, event) => {
-    console.log(emojiObject);
     setMessage((prevInput) => prevInput + emojiObject.emoji);
 
     setEmojiPicker(false);
@@ -116,6 +142,7 @@ function Message() {
   useEffect(() => {
     joinRoom();
     receiveMessage();
+    errorMessage();
   }, [privateRoomOfUser.data]);
 
   useEffect(() => {
@@ -128,12 +155,25 @@ function Message() {
     arrivalMessage && dispatch(updateMessages(arrivalMessage));
   }, [arrivalMessage]);
 
+  useEffect(() => {
+    errorArrivalMessage &&
+      openNotificationWithIcon(
+        "error",
+        "Too Many Requests",
+        "try again later..."
+      );
+  }, [errorArrivalMessage]);
+
   return (
     <Layout id="messages-layout">
       <div id="message-receiver-heading-container" onClick={showSideBarDrawer}>
         {privateRoomOfUser.data && privateRoomOfUser.data._id ? (
           <>
-            <img src={Person} alt="" id="message-receiver-image" />
+            <img
+              src={`${senderAndReceiver.data.messageReceiverProfilePic}`}
+              alt=""
+              id="message-receiver-image"
+            />
             <div id="message-receiver-name-and-active-status-container">
               <h4 id="message-receiver-name">
                 {senderAndReceiver.data.messageReceiverName}
@@ -196,9 +236,9 @@ function Message() {
         <Modal
           open={emojiModelOpen}
           onCancel={() => setEmojiModalOpen(false)}
-          onOk={() => setEmojiModalOpen(false)}
+          footer={null}
         >
-          <div className="modal-box" onClick={modalEmojiCloser}>
+          <div className="modal-box">
             {emojiPicker && (
               <EmojiPicker emojiStyle="google" onEmojiClick={onEmojiClick} />
             )}
@@ -207,6 +247,7 @@ function Message() {
 
         <SendOutlined id="send-btn" onClick={sendMessage} />
       </div>
+      {contextHolder}
     </Layout>
   );
 }
