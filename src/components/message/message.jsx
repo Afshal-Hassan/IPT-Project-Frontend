@@ -10,6 +10,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   updateMessages,
   getMessagesOfTwoUsers,
+  refreshMessages,
 } from "../../services/message-slice";
 import SideBarIcon from "../../assets/SideBarIcon.png";
 import { updateSideBarStatus } from "../../services/sidebar-slice";
@@ -37,6 +38,7 @@ function Message() {
   const scrollRef = useRef();
 
   const joinRoom = async () => {
+    dispatch(refreshMessages());
     if (Object.keys(privateRoomOfUser.data).length != 0) {
       socket.emit("join-room", privateRoomOfUser.data._id);
       dispatch(
@@ -68,16 +70,16 @@ function Message() {
   };
 
   const receiveMessage = () => {
-    socket.off("receive-message").on(
-      "receive-message",
-      (data) => {
-        setArrivalMessage({
-          senderId: senderAndReceiver.data.messageReceiver,
-          message: data.message,
-        });
-      },
-      [socket]
-    );
+    const handleReceiveMessage = (data) => {
+      setArrivalMessage({
+        senderId: senderAndReceiver.data.messageReceiver,
+        message: data.message,
+      });
+    };
+
+    // Remove existing event listener (if any) and add a new one
+    socket.off("receive-message", handleReceiveMessage);
+    socket.on("receive-message", handleReceiveMessage);
   };
 
   const onChangeMessageText = (event) => {
@@ -120,13 +122,11 @@ function Message() {
     scrollRef.current?.scrollIntoView({ behaviour: "smooth" });
     document.getElementById("messages-container").scrollTop =
       document.getElementById("messages-container").scrollHeight;
-  });
+  }, [messages]);
 
   useEffect(() => {
     arrivalMessage && dispatch(updateMessages(arrivalMessage));
   }, [arrivalMessage]);
-
-  useEffect(() => {}, [messages]);
 
   return (
     <Layout id="messages-layout">
@@ -186,7 +186,6 @@ function Message() {
         />
 
         <AreaChartOutlined
-          s
           className="insert-emoji"
           onClick={() => {
             setEmojiPicker((val) => !val);

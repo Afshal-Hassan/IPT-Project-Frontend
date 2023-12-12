@@ -1,6 +1,6 @@
 import React from "react";
 import "./user.css";
-import { Layout, Typography, Progress } from "antd";
+import { Layout, Typography, Progress, notification } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import Person from "../../assets/Person.jpg";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,6 +14,8 @@ const { Title } = Typography;
 const { Text } = Typography;
 
 function Users() {
+  const [api, contextHolder] = notification.useNotification();
+
   const dispatch = useDispatch();
   const listOfFriends = useSelector((state) => state.friendSlice);
 
@@ -22,6 +24,13 @@ function Users() {
 
   const onSearch = (event) => {
     setSearchValue(event.target.value);
+  };
+
+  const openNotificationWithIcon = (type, message, description) => {
+    api[type]({
+      message: message,
+      description: description,
+    });
   };
 
   const getPrivateRoom = async (friend) => {
@@ -104,6 +113,7 @@ function Users() {
             </div>
           ))
       )}
+      {contextHolder}
     </Layout>
   );
 }

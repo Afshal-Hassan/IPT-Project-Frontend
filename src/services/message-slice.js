@@ -36,6 +36,11 @@ const MessageSlice = createSlice({
       state.data.push(action.payload);
       state.isLoader = false;
     },
+    refreshMessages: (state, action) => {
+      state.isLoader = true;
+      state.data = [];
+      state.isLoader = false;
+    },
   },
 
   extraReducers: (builder) => {
@@ -55,6 +60,6 @@ const MessageSlice = createSlice({
   },
 });
 
-export const { updateMessages } = MessageSlice.actions;
+export const { updateMessages, refreshMessages } = MessageSlice.actions;
 
 export default MessageSlice.reducer;
