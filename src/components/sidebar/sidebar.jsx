@@ -15,6 +15,7 @@ import { getFriendsOfUser } from "../../services/friend-slice";
 import { getPrivateRoomOfUser } from "../../services/private-room-slice";
 import { updateSenderAndReceiverData } from "../../services/sender-and-receiver-slice";
 import { useNavigate } from "react-router-dom";
+import { getMessagesOfTwoUsers } from "../../services/message-slice";
 
 const { Title } = Typography;
 const { Text } = Typography;
@@ -58,7 +59,30 @@ function Sidebar() {
     setUserId(newUserId);
 
     if (newUserId != null) {
-      dispatch(getFriendsOfUser(newUserId));
+      const response = await dispatch(getFriendsOfUser(newUserId));
+      if (response.payload.length > 0) {
+        dispatch(
+          getPrivateRoomOfUser({
+            user1Id: newUserId,
+            user2Id: response.payload[0].friendId._id,
+          })
+        );
+
+        dispatch(
+          updateSenderAndReceiverData({
+            messageSender: newUserId,
+            messageReceiver: response.payload[0].friendId._id,
+            messageReceiverName: response.payload[0].friendId.name,
+          })
+        );
+
+        dispatch(
+          getMessagesOfTwoUsers({
+            user1Id: newUserId,
+            user2Id: response.payload[0].friendId._id,
+          })
+        );
+      }
     }
   };
 
@@ -127,7 +151,11 @@ function Sidebar() {
               key={i}
               onClick={() => getPrivateRoom(friendId)}
             >
-              <img src={Person} alt="" className="user-image" />
+              <img
+                src={`${friendId.profilePic}`}
+                alt=""
+                className="user-image"
+              />
               <Text className="user-name">{friendId.name}</Text>
             </div>
           ))

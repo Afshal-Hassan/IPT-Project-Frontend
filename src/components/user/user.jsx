@@ -47,7 +47,30 @@ function Users() {
     setUserId(newUserId);
 
     if (newUserId != null) {
-      dispatch(getFriendsOfUser(newUserId));
+      const response = await dispatch(getFriendsOfUser(newUserId));
+      if (response.payload.length > 0) {
+        dispatch(
+          getPrivateRoomOfUser({
+            user1Id: newUserId,
+            user2Id: response.payload[0].friendId._id,
+          })
+        );
+
+        dispatch(
+          updateSenderAndReceiverData({
+            messageSender: newUserId,
+            messageReceiver: response.payload[0].friendId._id,
+            messageReceiverName: response.payload[0].friendId.name,
+          })
+        );
+
+        dispatch(
+          getMessagesOfTwoUsers({
+            user1Id: newUserId,
+            user2Id: response.payload[0].friendId._id,
+          })
+        );
+      }
     }
   };
 
@@ -100,7 +123,11 @@ function Users() {
               key={i}
               onClick={() => getPrivateRoom(friendId)}
             >
-              <img src={Person} alt="" className="user-image" />
+              <img
+                src={`${friendId.profilePic}`}
+                alt=""
+                className="user-image"
+              />
               <Text className="user-name">{friendId.name}</Text>
             </div>
           ))
