@@ -134,6 +134,7 @@ function Users() {
             fontSize: 17,
             position: "relative",
             top: 8.5,
+            right: 15,
           }}
           onClick={logOut}
         />
